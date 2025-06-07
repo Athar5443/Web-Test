@@ -1,0 +1,40 @@
+name: 🚀 Auto Generate Realistic Commits
+
+on:
+  schedule:
+    - cron: '*/3 * * * *'  # Setiap 3 menit
+  workflow_dispatch:
+
+jobs:
+  mass-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Pull latest changes
+        run: git pull --rebase origin main
+
+      - name: Setup Git user
+        run: |
+          git config user.name "Athar5443"
+          git config user.email "192484106+Athar5443@users.noreply.github.com"
+
+      - name: Generate and Commit random .txt files individually (Faster)
+        run: |
+          mkdir -p rar
+          for i in $(seq 1 5100); do # Sesuaikan jumlah commit sesuai kebutuhan
+            FILENAME="rar/random_$i.txt"
+            # Menulis konten ke file dengan timestamp untuk memastikan perubahan
+            echo "$(date +%s%N)" > "$FILENAME" 
+            
+            git add "$FILENAME"
+            git commit -m "feat: Add random file $i - $(date +%s%N)" # Pesan commit unik
+          done
+
+      - name: Push to GitHub
+        run: git push origin main
